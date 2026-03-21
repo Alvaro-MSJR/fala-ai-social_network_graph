@@ -477,30 +477,11 @@ fala-ai-graph/
 
 -  Implementar recomendações em tempo real
 
----
+## 📝 Licença
 
-## 👨‍💻 Desenvolvedor
-<p>&nbsp&nbsp&nbspAlvaro Monteiro<br>
-    &nbsp&nbsp&nbsp
-    <a href="https://github.com/Alvaro-MSJR">
-    GitHub</a>&nbsp;|&nbsp;
-    <a href="www.linkedin.com/in/alvaro-monteiro-silva">LinkedIn</a>
-&nbsp;|&nbsp;</p>
-
-
-⌨️ Outros Conteúdos por [Alvaro Monteiro](https://github.com/Alvaro-MSJR)
-
----
-
-### 🤝 Contribuições
-Contribuições são bem-vindas! Sinta-se à vontade para abrir uma issue ou um pull request.
-
+Este projeto está licenciado sob a licença MIT - veja o arquivo LICENSE para detalhes.
 
 ## ✨ Agradecimentos
-
--  A DEUS, sobre todas as coisas.
-
--  Minha família e amigos.
 
 -  Comunidade Neo4j pelo suporte e documentação
 
@@ -508,9 +489,5 @@ Contribuições são bem-vindas! Sinta-se à vontade para abrir uma issue ou um 
 
 -  Contribuidores do projeto Twitch Graph Examples pela inspiração
 
--  E a todos os entusiastas de Ciência de Dados que compartilham conhecimento e tornam projetos como este possíveis.
-
 ### ***Desenvolvido como parte do desafio de Banco de Dados em Grafos com Neo4j**
 ### **"Fala Ai" - Conectando pessoas através de grafos 🚀**
-
-Muito obrigado pela atenção!
