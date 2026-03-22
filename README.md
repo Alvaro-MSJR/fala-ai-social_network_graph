@@ -5,7 +5,9 @@
 [![Neo4j](https://img.shields.io/badge/Neo4j-008CC1?style=for-the-badge&logo=neo4j&logoColor=white)](https://neo4j.com/)
 [![Cypher](https://img.shields.io/badge/Cypher-FFE047?style=for-the-badge&logo=neo4j&logoColor=black)](https://neo4j.com/developer/cypher/)
 [![GDS](https://img.shields.io/badge/GDS-6DBE4E?style=for-the-badge&logo=neo4j&logoColor=white)](https://neo4j.com/docs/graph-data-science/)
-[![Python](https://img.shields.io/badge/Python-F00CC1?style=for-the-badge&logo=neo4j&logoColor=white))](https://www.python.org/)
+[![Python](https://img.shields.io/badge/Python-F00CC1?style=for-the-badge&logo=neo4j&logoColor=white)](https://www.python.org/)
+[![GeminiAI](https://img.shields.io/badge/GeminiAI-C96B80?style=for-the-badge&logo=neo4j&logoColor=black)](https://gemini.google.com/app)
+[![DeepSeek](https://img.shields.io/badge/DeepSeek-004A77?style=for-the-badge&logo=neo4j&logoColor=black)](https://www.deepseek.com/en/)
 
 ## 📋 Sobre o Projeto
 
@@ -75,6 +77,24 @@
 - Plugins: APOC e Graph Data Science (GDS)
 - Navegador moderno para visualização
 
+### **Opção de Execucação**
+
+- **Opcional usar o VsCode para criar o seu ambiente.**
+- Instalar o Docker desktop
+- Instalar se for Windows o WSL
+- Instalar o docker
+- Docker com esta configuração.
+
+    docker run \
+        --name neo4j-fala-ai-Local \
+        -p 7474:7474 \
+        -p 7687:7687 \
+        -e NEO4J_AUTH=neo4j/falaai123 \
+        -e NEO4J_PLUGINS='["graph-data-science", "apoc"]' \
+        -d \
+        neo4j:5.23
+ 
+
 ### Passo a Passo
 
 1. **Clone o repositório**
@@ -84,17 +104,17 @@
    cd fala-ai-graph 
    ```
    
-2. **Inicie o Neo4j e acesse o Browser (geralmente http://localhost:7474)**
+2. **Inicie o Neo4j AuraDB web ou desktop, caso tenha usado o docker, acesse o Browser (geralmente http://localhost:7474)**
 
 3. **Execute os scripts na ordem correta:**
 
    ```bash
 
-    scripts/01_criacao_banco.cypher - Cria constraints e índices
+    scripts/01_criacao_banco.cypher - Cria constraints e índices e Popula o banco com dados de exemplo
 
-    scripts/02_carga_dados.cypher - Popula o banco com dados de exemplo
+    scripts/02_analise_queries.cypher - Analise de plano de acesso de algumas querys utilizadas.
 
-    scripts/03_analises_completas.cypher - Executa as análises
+    scripts/03_analises_completas.cypher - Executa as análises   - Execute consulta a consulta para poder ver o resultado
    ```
 
 ---
@@ -119,6 +139,8 @@ Objetivo: Analisar distribuições agregadas de forma simples.
 	    count(*) AS total_usuarios
 	ORDER BY total_usuarios DESC;
 ```
+**Resultado:**
+![ Distribuição de usuários por faixa etária](./imagens/1_queries_agregacao.JPG)
 
 **Resultado esperado**: Permite identificar o público-alvo predominante na plataforma.
 
@@ -424,46 +446,51 @@ ORDER BY COUNT(*) DESC;
 
 ## 📂 Estrutura do Repositório
 
-fala-ai-graph/
-├── README.md                 # Este arquivo
-├── LICENSE                   # Licença MIT
-├── /docs
-│   ├── modelagem.md          # Detalhes técnicos da modelagem
-│   └── analise_tecnica.md    # Análise aprofundada dos algoritmos
-├── /scripts
-│   ├── 01_criacao_banco.cypher
-│   ├── 02_carga_dados.cypher
-│   └── 03_analises_completas.cypher
-├── /imagens
-│   ├── modelo_grafo.png
-│   ├── grafo_visual.png
-│   └── comunidades.png
-└── /data
-    └── sample_data.csv
+    fala-ai-graph/
+    ├── README.md                 # Este arquivo
+    ├── /docs
+    ├── /scripts
+    │   ├── 01_criacao_banco.cypher
+    │   ├── 02_analise_queries.cypher
+    │   └── 03_analises_completas.cypher
+    ├── /imagens
+    └── /data
+        
 
 ---
 
 ## 🐛 Troubleshooting e Dicas
 
+
 ### Problemas Comuns e Soluções
+
 
 - **Erro ao executar algoritmos GDS**
 
--  Verifique se o plugin Graph Data Science está instalado
+- -     Verifique se o plugin Graph Data Science está instalado
 
--  Execute CALL gds.list() para confirmar disponibilidade
+- -     Execute CALL gds.list() para confirmar disponibilidade
+
+- -     No meu caso, como eu nao tenho o Neo4J Desktop e ainda estou na versao free do banco, tive que:
+- - -       Criar uma imagem do Neo4J via docker
+- - -       Importar o banco para o ambiente
+
+- -     E testar os itens 03 a 08  do arquivo 03_analiises_completas.cypher, nesta opção do docker... Ufa da tabalho.
+
+- -     Problema para executar a analise 6.2 (  arquivo 03_analiises_completas.cypher) , o unico jeito que encontrei foi usar uma query cypher para trazer os dados.
 
 - **Projeção de grafo não encontrada**
 
--  Execute CALL gds.graph.list() para ver projeções existentes
+- -     Execute CALL gds.graph.list() para ver projeções existentes
 
--  Recrie a projeção se necessário
+- -     Recrie a projeção se necessário
+
 
 - **Performance lenta em grafos grandes**
 
--  Use :auto e IN TRANSACTIONS para cargas grandes
+- -     Use :auto e IN TRANSACTIONS para cargas grandes
 
--  Crie índices apropriados (CREATE INDEX)
+- -    Crie índices apropriados (CREATE INDEX)
 
 ## 🔄 Próximos Passos
 
@@ -487,8 +514,13 @@ fala-ai-graph/
     <a href="www.linkedin.com/in/alvaro-monteiro-silva">LinkedIn</a>
 &nbsp;|&nbsp;</p>
 
+---
 
-⌨️ Outros Conteúdos por [Alvaro Monteiro](https://github.com/Alvaro-MSJR)
+### 📢 Notas sobre a Criação do Projeto
+
+Este trabalho foi desenvolvido com o apoio de IA Generativa, usei tanto DeepSeek quanto GeminiAI para desenvolvimento do estudo e criação do projeto.
+
+Uso da IA ajuda muito na velocidade da construção, porém o conhecimento ainda é humano.
 
 ---
 

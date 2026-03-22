@@ -1,0 +1,218 @@
+*******************
+Execucao das querys.
+Do aarquivo 03_analises_completas.cypher
+Do item 03 ao 08
+Dos items 01,02 e 09 e 10, podem ser executados no banco Neo4J AuraDB
+******************
+
+Sem o Neo4j Desktop, você tem algumas alternativas para testar o banco de dados e os scripts Cypher:
+
+Opção 1: Neo4j Sandbox (Gratuito - Recomendado)
+Acesse: https://sandbox.neo4j.com/
+
+Crie uma conta gratuita (ou use GitHub/Google)
+
+Escolha o template "Blank Sandbox"
+
+Aguarde a criação do ambiente (cerca de 2 minutos)
+
+Clique em "Open" para abrir o Neo4j Browser
+
+Execute seus scripts diretamente no navegador
+
+Vantagens:
+
+Totalmente online, sem instalação
+
+Já vem com GDS e APOC pré-instalados
+
+Grátis por 3 dias (pode renovar)
+
+Opção 3: Docker (Para quem tem Docker instalado)
+Execute o Neo4j com GDS via Docker:
+
+bash
+docker run `
+    --name neo4j-fala-ai `
+    -p 7474:7474 `
+    -p 7687:7687 `
+    -e NEO4J_AUTH=neo4j/falaai123 `
+    -e NEO4J_PLUGINS='["graph-data-science", "apoc"]' `
+    -d `
+    neo4j:5-enterprise
+
+Após executar, acesse: http://localhost:7474
+
+Usuário: neo4j
+
+Senha: teste123
+
+Pré-requisito: Docker instalado na máquina
+
+Opção 4: Instalação Local via ZIP (Sem Desktop)
+Baixe o Neo4j Server Community Edition: https://neo4j.com/download-center/#community
+
+Extraia o arquivo ZIP
+
+Baixe os plugins GDS e APOC e coloque na pasta plugins/
+
+Execute bin/neo4j start (Windows: bin\neo4j.bat start)
+
+Acesse http://localhost:7474
+
+Teste Rápido Após Conectar
+Após acessar qualquer uma das opções, execute para verificar se o GDS está funcionando:
+
+cypher
+// Verificar plugins instalados
+CALL gds.list();
+
+// Verificar versão
+RETURN gds.version() AS gds_version;
+Se ambos funcionarem, você pode executar todo o script de criação do banco.
+
+Recomendação: Use o Neo4j Sandbox se quiser algo rápido e sem instalação. É a opção mais simples para testes.
+
+
+*********************************
+
+Como eu abro o wsl dentro do vs code para poder executar o comando docker
+Ótimo! Com o WSL já configurado, siga estes passos para acessar e executar o Docker:
+
+Passo 1: Abrir o Terminal WSL no VS Code
+Método 1: Atalho do VS Code
+No VS Code, pressione Ctrl + ' (apóstrofo) para abrir o terminal
+
+Clique na seta dropdown ao lado do símbolo + no terminal
+
+Selecione "WSL" ou "Ubuntu" (ou sua distribuição WSL)
+
+Método 2: Comando no Terminal
+Se o terminal atual for PowerShell, digite:
+
+bash
+wsl
+Isso vai entrar no ambiente WSL
+
+Método 3: Abrir VS Code no WSL
+Abra um terminal WSL externo
+
+Navegue até seu projeto:
+
+bash
+cd /mnt/c/Users/Alvaro/OneDrive/1_DTO/BOOTCAMP_NEO4J/Modulo4/Desafio_Projeto/fala-ai-social_network_graph
+Abra o VS Code a partir do WSL:
+
+bash
+code .
+Passo 2: Verificar se o Docker está funcionando no WSL
+Dentro do terminal WSL, execute:
+
+bash
+docker --version
+Se mostrar a versão, está funcionando. Se der erro, inicie o Docker Desktop primeiro.
+
+Passo 3: Iniciar o Docker Desktop (se necessário)
+Abra o Docker Desktop no Windows (busque no menu Iniciar)
+
+Aguarde o ícone ficar verde indicando que está rodando
+
+Verifique se o WSL integration está ativada:
+
+Docker Desktop → Settings → Resources → WSL Integration
+
+Certifique-se que sua distribuição WSL está habilitada
+
+Passo 4: Executar o Container Neo4j
+Agora no terminal WSL dentro do VS Code, execute:
+
+bash
+docker run \
+    --name neo4j-fala-ai \
+    -p 7474:7474 \
+    -p 7687:7687 \
+    -e NEO4J_AUTH=neo4j/falaai123 \
+    -e NEO4J_PLUGINS='["graph-data-science", "apoc"]' \
+    -d \
+    neo4j:5-enterprise
+          5-community
+          5.23
+Ou 
+
+docker run \
+    --name neo4j-fala-ai-Local \
+    -p 7474:7474 \
+    -p 7687:7687 \
+    -e NEO4J_AUTH=neo4j/falaai123 \
+    -e NEO4J_PLUGINS='["graph-data-science", "apoc"]' \
+    -d \
+    neo4j:5.23
+
+
+Comando em uma única linha:
+
+bash
+docker run --name neo4j-fala-ai -p 7474:7474 -p 7687:7687 -e NEO4J_AUTH=neo4j/falaai123 -e NEO4J_PLUGINS='["graph-data-science", "apoc"]' -d neo4j:5-enterprise
+Passo 5: Verificar se o Container está Rodando
+bash
+docker ps
+Passo 6: Acessar o Neo4j Browser
+No Windows, abra o navegador
+
+Acesse: http://localhost:7474
+
+Verificar o ip: ip addr show eth0 | grep inet
+Ip = 172.30.123.19
+http://172.30.123.19:7474
+
+Conecte com:
+
+URL: bolt://localhost:7687
+
+Usuário: neo4j
+
+Senha: falaai123
+
+Passo 7: Executar Seus Scripts
+Opção 1: Copiar e colar no Neo4j Browser
+Opção 2: Copiar arquivo do Windows para o container
+No terminal WSL:
+
+bash
+# Navegue até o diretório do seu projeto (caminho do Windows)
+cd /mnt/c/Users/Alvaro/OneDrive/1_DTO/BOOTCAMP_NEO4J/Modulo4/Desafio_Projeto/fala-ai-social_network_graph
+
+# Copiar o script para o container
+docker cp scripts/01_criacao_banco.cypher neo4j-fala-ai:/var/lib/neo4j/scripts.cypher
+
+# Executar no Neo4j Browser
+# Depois no browser execute:
+:source /var/lib/neo4j/scripts.cypher
+Comandos Úteis no WSL
+bash
+# Ver logs do container
+docker logs neo4j-fala-ai
+
+# Parar o container
+docker stop neo4j-fala-ai
+
+# Iniciar novamente
+docker start neo4j-fala-ai
+
+# Remover container (se precisar recriar)
+docker rm -f neo4j-fala-ai
+Troubleshooting
+Erro: "Cannot connect to the Docker daemon"
+Certifique-se que o Docker Desktop está aberto e rodando
+
+Verifique se o WSL integration está ativado no Docker Desktop
+
+Erro: "port already in use"
+bash
+# Verificar o que está usando a porta
+sudo lsof -i :7474
+
+# Parar container anterior
+docker stop neo4j-fala-ai
+docker rm neo4j-fala-ai
+Agora você deve conseguir executar o Docker diretamente do VS Code via WSL!
