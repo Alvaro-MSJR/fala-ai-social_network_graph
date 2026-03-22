@@ -2,12 +2,25 @@
 
 # 🗣️ Fala Ai - Análise de Rede Social com Neo4j
 
+
 [![Neo4j](https://img.shields.io/badge/Neo4j-008CC1?style=for-the-badge&logo=neo4j&logoColor=white)](https://neo4j.com/)
 [![Cypher](https://img.shields.io/badge/Cypher-FFE047?style=for-the-badge&logo=neo4j&logoColor=black)](https://neo4j.com/developer/cypher/)
 [![GDS](https://img.shields.io/badge/GDS-6DBE4E?style=for-the-badge&logo=neo4j&logoColor=white)](https://neo4j.com/docs/graph-data-science/)
 [![Python](https://img.shields.io/badge/Python-F00CC1?style=for-the-badge&logo=neo4j&logoColor=white)](https://www.python.org/)
 [![GeminiAI](https://img.shields.io/badge/GeminiAI-C96B80?style=for-the-badge&logo=neo4j&logoColor=black)](https://gemini.google.com/app)
 [![DeepSeek](https://img.shields.io/badge/DeepSeek-004A77?style=for-the-badge&logo=neo4j&logoColor=black)](https://www.deepseek.com/en/)
+
+## 👍 Sobre mim
+
+Sou o **Álvaro Monteiro**, entusiatas de IA e agora de banco em grafo. Aluno aqui da DIO.me, que é fantástica.
+
+Quero compartilhar com voces este projeto de analise e redes socias
+
+Foi bem desafiador, pois tudo aqui no Neo4J e novo, porém desafio dado é dessafio cumprido (kkk)
+
+Espero que gostem da abordagem que fiz sobre o projeto, e sendo possivel podem enviar comentários sugestões ou até fazer um fork do projeto e dar continuidade fiquem a vontade.
+
+Forte abraço, espero que gostem!
 
 ## 📋 Sobre o Projeto
 
