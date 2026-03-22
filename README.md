@@ -43,6 +43,21 @@ Forte abraço, espero que gostem!
    - Demografia (idade, sexo, localização)
    - Amigos em comum
 
+### Grafo do projeto
+
+**Visão Pessoa x Comunidade**
+
+![ Visão Pessoa x Comunidade ](./imagens/visao_pessoa_x_cominidade.JPG)
+
+**Outra visão -> Visão Pessoa x Grupos**
+
+![ Visão Pessoa x Grupos ](./imagens/visao_pessoa_x_grupos.JPG)
+
+**Outra visão -> Visão Pessoa x Post**
+
+![ Visão Pessoa x Post ](./imagens/visao_pessoa_x_posts.JPG)
+
+
 ### 🧠 Por que Grafos?
 
 | Problema | Abordagem Tradicional (SQL) | Abordagem em Grafo (Neo4j) |
@@ -109,6 +124,9 @@ Forte abraço, espero que gostem!
         -d \
         neo4j:5.23
  
+ **Instalação do Neo4J local via Docker**
+
+![ Docker instanciando o Neo4J ](./imagens/docker_neo4j_execucaodequerys_p1JPG.JPG)
 
 ### Passo a Passo
 
@@ -154,7 +172,9 @@ Objetivo: Analisar distribuições agregadas de forma simples.
 	    count(*) AS total_usuarios
 	ORDER BY total_usuarios DESC;
 ```
+
 **Resultado:**
+
 ![ Distribuição de usuários por faixa etária](./imagens/1_queries_agregacao.JPG)
 
 **Resultado esperado**: Permite identificar o público-alvo predominante na plataforma.
@@ -180,8 +200,12 @@ RETURN
     END AS faixa_seguidores,
     count(*) AS total_pessoas
 ORDER BY faixa_seguidores;
+```
 
+**Resultado:**
+![ Distribuição de seguidores](./imagens/2_analise_publico_alvo.JPG)
 
+```
 // Estatísticas da distribuição usando APOC
 
 MATCH (p:Pessoa)
@@ -191,10 +215,10 @@ RETURN apoc.agg.statistics(seguidores) AS estatisticas;
 ```
 - **Insight: Identifica a concentração de seguidores - normalmente uma distribuição power-law (poucos influenciadores, muitos com poucos seguidores).**
 
+
 ### 3. Weakly Connected Components (WCC)
 
 Objetivo: Identificar componentes isolados na rede social.
-
 
 **3.1. Projetar o grafo para o GDS**
 
@@ -210,6 +234,9 @@ CALL gds.graph.project(
     }
 );
 ```
+**Resultado:**
+
+![ Identificacao de componentes isolados na rede social](./imagens/3_identificar_comp_isoslados_rede.jpg)
 
 **3.2. Executar WCC e analisar componentes**
 
@@ -221,6 +248,10 @@ YIELD componentCount, componentDistribution
 RETURN componentCount AS total_componentes,
        componentDistribution.p99 AS percentil_99_tamanho;
 ``` 
+
+**Resultado:**
+
+![ Análise de componentes ](./imagens/3_2_analise_componetes_wcc.jpg)
 
 **3.3. Encontrar os maiores componentes**
 
@@ -253,6 +284,10 @@ ORDER BY score DESC LIMIT 10;
 Interpretação: Usuários com maior PageRank são aqueles que recebem muitos seguidores e também são seguidos por outros influenciadores.
 ``` 
 
+**Resultado:**
+
+![ PageRank na rede de seguidores](./imagens/4_pagerank_influencia.jpg)
+
 
 ### 5. Community Detection (Louvain)**
 
@@ -271,6 +306,10 @@ RETURN communityId, size(membros) AS tamanho, membros[0..5] AS exemplos
 ORDER BY tamanho DESC LIMIT 5;
 ```
 
+**Resultado:**
+
+![ Louvain na rede de interações](./imagens/5_deteccao_comunidades.jpg)
+
 
 ### 6. Shared Audience Analysis
 
@@ -286,7 +325,13 @@ CALL gds.graph.project(
     { Pessoa: { properties: 'idade', label: 'Pessoa' }, Post: {} },
     { CURTIU: { type: 'CURTIU', orientation: 'REVERSE' } }
 );
+
 ```
+
+**Resultado:**
+
+![  grafo de audiência compartilhada](./imagens/6_1_analise_audiencia.jpg)
+
 
 **6.2. Calcular similaridade entre usuários baseada em posts curtidos**
 
@@ -304,7 +349,32 @@ RETURN gds.util.asNode(node1).nome AS usuario1,
        gds.util.asNode(node2).nome AS usuario2,
        similarity
 ORDER BY similarity DESC LIMIT 20;
+ 
+
+// 6.2 Alternativa Cypher puro.
+// Análise de similaridade com Cypher puro
+
+MATCH (p1:Pessoa)-[:CURTIU]->(post:Post)<-[:CURTIU]-(p2:Pessoa)
+WHERE p1 <> p2
+WITH p1, p2, COUNT(DISTINCT post) AS posts_comuns
+WHERE posts_comuns > 0
+WITH p1, p2, posts_comuns,
+     COUNT{ (p1)-[:CURTIU]->() } AS total_curtidas_p1,
+     COUNT{ (p2)-[:CURTIU]->() } AS total_curtidas_p2
+RETURN p1.nome AS usuario1,
+       p2.nome AS usuario2,
+       posts_comuns AS posts_em_comum,
+       total_curtidas_p1 AS curtidas_p1,
+       total_curtidas_p2 AS curtidas_p2,
+       toFloat(posts_comuns) / (total_curtidas_p1 + total_curtidas_p2 - posts_comuns) AS jaccard_similaridade
+ORDER BY jaccard_similaridade DESC
+LIMIT 20;
 ``` 
+
+**Resultado:**
+
+![ Similaridade entre usuários baseada em posts curtidos](./imagens/6_2_similaridade_entre_usuarios_via_post.jpg)
+
 
 ### 7. Análises de Caminho e Proximidade
 
@@ -316,22 +386,35 @@ Objetivo: Encontrar o menor caminho entre usuários.
 cypher
 
 MATCH path = shortestPath(
-    (a:Pessoa {nome: 'Ana'})-[*]-(b:Pessoa {nome: 'Carlos'})
+    (a:Pessoa {nome: 'Daniel Carvalho'})-[*]-(b:Pessoa {nome: 'Felipe Araújo'})
 )
 RETURN length(path) AS distancia,
        [node IN nodes(path) | node.nome] AS caminho;
 ``` 
 
+**Resultado:**
+
+![ Caminho mais curto entre dois usuários específicos](./imagens/7_caminho_mais_proximo.jpg)
+
+
+
 **Caminho mais curto baseado em tipo de relacionamento específico**
+
 ``` 
 cypher
 
 MATCH path = shortestPath(
-    (a:Pessoa {nome: 'Ana'})-[:AMIGO_DE*]-(b:Pessoa {nome: 'Carlos'})
+    (a:Pessoa {nome: 'Tatiana Borges'})-[:AMIGO_DE*]-(b:Pessoa {nome: 'Lucas Mendes'})
 )
 RETURN length(path) AS distancia_amizade,
        [node IN nodes(path) | node.nome] AS caminho_amigos;
+
 ``` 
+
+**Resultado:**
+
+![Caminho mais curto baseado em tipo de relacionamento específico](./imagens/7_caminho_mais_proximo_v2.jpg)
+
 
 ### 8. Algoritmo Node Similarity para Recomendações
 
@@ -351,6 +434,11 @@ CALL gds.graph.project(
 );
 ``` 
 
+**Resultado:**
+
+![ rojetar grafo para similaridade ](./imagens/8_1_no_que_sao_similares_para_recomendacao.jpg)
+
+
 **8.2. Calcular similaridade entre usuários**
 ``` 
 cypher
@@ -360,11 +448,16 @@ CALL gds.nodeSimilarity.stream('user-similarity', {
     similarityCutoff: 0.4
 })
 YIELD node1, node2, similarity
-WHERE gds.util.asNode(node1).nome = 'Ana'
+WHERE gds.util.asNode(node1).nome = 'Felipe Araújo'
 RETURN gds.util.asNode(node2).nome AS recomendado,
        similarity AS pontuacao_similaridade
 ORDER BY similarity DESC LIMIT 5;
 ``` 
+
+**Resultado:**
+
+![  Calcular similaridade entre usuários](./imagens/8_2_similar_entre_usuarios.jpg)
+
 
 ### 9. Critérios para Recomendação de Seguidores
 
@@ -374,7 +467,7 @@ Objetivo: Recomendar usuários com base em critérios demográficos e de interes
 ``` 
 cypher
 
-MATCH (p:Pessoa {nome: 'Ana'})-[:CURTIU]->(post:Post)<-[:CURTIU]-(candidato:Pessoa)
+MATCH (p:Pessoa {nome: 'Fernanda Lima'})-[:CURTIU]->(post:Post)<-[:CURTIU]-(candidato:Pessoa)
 WHERE NOT EXISTS( (p)-[:SEGUE]->(candidato) )
   AND p <> candidato
 WITH candidato, COUNT(DISTINCT post) AS posts_comuns
@@ -384,12 +477,16 @@ RETURN candidato.nome AS recomendado,
 ORDER BY posts_comuns DESC LIMIT 5;
 ``` 
 
+**Resultado:**
+
+![ Interesses similares (posts curtidos em comum)](./imagens/9_1_recomendacao_seguidores_por_usuario.jpg)
+
 
 **Critério 9.2: Mesma faixa etária e sexo**
 ``` 
 cypher
 
-MATCH (p:Pessoa {nome: 'Ana'})
+MATCH (p:Pessoa {nome: 'Fernanda Lima'})
 MATCH (c:Pessoa)
 WHERE p <> c
   AND NOT EXISTS( (p)-[:SEGUE]->(c) )
@@ -402,11 +499,17 @@ RETURN c.nome AS recomendado,
 LIMIT 5;
 ``` 
 
+**Resultado:**
+
+![ Similaridade na Mesma faixa etária e sexo](./imagens/9_2_recomendacao_mesmo_idade_sexo.jpg)
+
+
 **Critério 9.3: Amigos em comum (amizade indireta)**
+
 ``` 
 cypher
 
-MATCH (p:Pessoa {nome: 'Ana'})-[:AMIGO_DE*2]-(c:Pessoa)
+MATCH (p:Pessoa {nome: 'João Pereira'})-[:AMIGO_DE*2]-(c:Pessoa)
 WHERE NOT EXISTS( (p)-[:AMIGO_DE]-(c) )
   AND p <> c
 WITH c, COUNT(*) AS amigos_em_comum
@@ -414,6 +517,11 @@ RETURN c.nome AS recomendado,
        amigos_em_comum
 ORDER BY amigos_em_comum DESC LIMIT 5;
 ``` 
+
+**Resultado:**
+
+![ Amigos em comum (amizade indireta)](./imagens/9_3_amigos_em_comum.jpg)
+
 
 ### 10. Análise de Público-Alvo por Grupo/Comunidade
 
@@ -432,6 +540,12 @@ RETURN
     p.cidade AS cidade_mais_comum
 ORDER BY COUNT(*) DESC;
 ``` 
+
+**Resultado:**
+
+![Análise do público de um grupo específico](./imagens/10_analise_publico_alvo_por_grupo_comunidade.jpg)
+
+
 ---
 
 ## 📈 Análise das Técnicas Utilizadas
@@ -455,8 +569,7 @@ ORDER BY COUNT(*) DESC;
 | Cypher | - | Linguagem de consulta |
 | APOC | 5.x | Procedimentos auxiliares (estatísticas, utilidades) |
 | Graph Data Science (GDS) | 2.x | Algoritmos de grafos avançados |
-| Neo4j Browser | - | Interface de consulta e visualização |
-| Arrows.app | - | Modelagem do grafo |
+| Docker | - | Instanciando o banco local para poder usar a biblioteca GDS |
 
 
 ## 📂 Estrutura do Repositório
@@ -469,8 +582,8 @@ ORDER BY COUNT(*) DESC;
     │   ├── 02_analise_queries.cypher
     │   └── 03_analises_completas.cypher
     ├── /imagens
-    └── /data
-        
+    ├── /data
+    └── /old
 
 ---
 
@@ -509,15 +622,9 @@ ORDER BY COUNT(*) DESC;
 
 ## 🔄 Próximos Passos
 
--  Integrar com dados reais via API
-
--  Implementar pipeline de atualização incremental
-
--  Criar dashboard interativo com Neo4j Bloom
-
 -  Adicionar mais propriedades para análise de sentimento
 
--  Implementar recomendações em tempo real
+-  Aprofundar mais conhecimento sobre GDS 
 
 ---
 
@@ -540,6 +647,7 @@ Uso da IA ajuda muito na velocidade da construção, porém o conhecimento ainda
 ---
 
 ### 🤝 Contribuições
+
 Contribuições são bem-vindas! Sinta-se à vontade para abrir uma issue ou um pull request.
 
 
