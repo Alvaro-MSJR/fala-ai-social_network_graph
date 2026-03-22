@@ -5,10 +5,12 @@
 
 [![Neo4j](https://img.shields.io/badge/Neo4j-008CC1?style=for-the-badge&logo=neo4j&logoColor=white)](https://neo4j.com/)
 [![Cypher](https://img.shields.io/badge/Cypher-FFE047?style=for-the-badge&logo=neo4j&logoColor=black)](https://neo4j.com/developer/cypher/)
+[![Docker](https://img.shields.io/badge/Docker-004A77?style=for-the-badge&logo=neo4j&logoColor=black)](https://www.docker.com/)
 [![GDS](https://img.shields.io/badge/GDS-6DBE4E?style=for-the-badge&logo=neo4j&logoColor=white)](https://neo4j.com/docs/graph-data-science/)
 [![Python](https://img.shields.io/badge/Python-F00CC1?style=for-the-badge&logo=neo4j&logoColor=white)](https://www.python.org/)
 [![GeminiAI](https://img.shields.io/badge/GeminiAI-C96B80?style=for-the-badge&logo=neo4j&logoColor=black)](https://gemini.google.com/app)
 [![DeepSeek](https://img.shields.io/badge/DeepSeek-004A77?style=for-the-badge&logo=neo4j&logoColor=black)](https://www.deepseek.com/en/)
+
 
 ## 👍 Sobre mim
 
